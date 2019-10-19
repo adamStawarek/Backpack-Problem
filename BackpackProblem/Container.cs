@@ -22,7 +22,7 @@ namespace BackpackProblem
 
         public void AddItem(Item item)
         {
-            if (item.Height <= Width && item.Height <= Height && item.Width <= Width && item.Width <= Height)
+            if ((item.Height <= Height && item.Width <= Width) || (item.Height <= Width && item.Width <= Height))
                 Items.Add(item);
         }
 
