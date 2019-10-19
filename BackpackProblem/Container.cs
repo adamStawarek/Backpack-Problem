@@ -117,22 +117,17 @@ namespace BackpackProblem
             // Run a loop from 0 to 2^n
             for (int i = 0; i < 1 << n; i++)
             {
-                Console.WriteLine();
                 var subset = new Subset();
                 int m = 1; // m is used to check set bit in binary representation.
-                // Print current subset
                 for (int j = 0; j < n; j++)
                 {
                     if ((i & m) > 0)
                     {
                         subset.Items.Add(Items[j]);
-                        Console.WriteLine(Items[j]);
                     }
-                    m = m << 1;
+                    m <<= 1;
                 }
-
                 AddSubset(subset);
-                Console.WriteLine();
             }
         }
 

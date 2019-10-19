@@ -15,7 +15,7 @@ namespace Backpack.Problem.Tests.Integration
             container.SortSubsets();
             var subset = container.FindBestSubset();
 
-            Assert.AreEqual(192, subset.TotalArea);
+            Assert.AreEqual(255, subset.TotalArea);
         }
     }
 }
