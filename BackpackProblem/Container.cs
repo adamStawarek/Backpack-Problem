@@ -62,16 +62,19 @@ namespace BackpackProblem
         public (bool canFit, int? spaceRemaining) CheckIfSubsetFits(Subset subset)
         {
             var spaces = new List<Space> { new Space(0, 0, Width, Height) };
-
+            int counter = 0;
+            
             foreach (var item in subset.Items.OrderByDescending(i => i.Area))
             {
-                var space = spaces.FirstOrDefault(s => s.CanFit(item));
+                var space = spaces.Where(s => s.CanFit(item)).OrderBy(s=>s.Area).FirstOrDefault();
                 if (space == null)
                 {
                     return (false, null); //item does not fit space
                 }
                 else
                 {
+                    item.Space = new Space(space.X, space.Y,space.Width,space.Height);
+                    item.SelectionCounter = ++counter;
                     if ((space.Width == item.Width && space.Height == item.Height) ||
                         (space.Height == item.Width && space.Width == item.Height))
                     {
@@ -80,23 +83,17 @@ namespace BackpackProblem
                     else if (item.Height == space.Height)
                     {
                         space.Width -= item.Width;
-                    }
-                    else if (item.Width == space.Height)
-                    {
-                        space.Width -= item.Height;
+                        space.X += item.Width;
                     }
                     else if (item.Width == space.Width)
                     {
                         space.Height -= item.Height;
-                    }
-                    else if (item.Height == space.Width)
-                    {
-                        space.Height -= item.Width;
+                        space.Y += item.Height;
                     }
                     else
                     {
-                        spaces.Add(new Space(space.X + item.Width, space.Y, space.Width - item.Width, item.Height));
-                        spaces.Add(new Space(space.X, space.Y + item.Height, space.Width, space.Height - item.Height));
+                        spaces.Add(new Space(space.X, space.Y+item.Height, item.Width, space.Height - item.Height));
+                        spaces.Add(new Space(space.X + item.Width, space.Y, space.Width- item.Width, space.Height));
                         spaces.Remove(space);
                     }
                 }
@@ -104,7 +101,6 @@ namespace BackpackProblem
 
             return (true, spaces.Sum(s => s.Area));
         }
-
         public Subset FindBestSubset()
         {
             return Subsets.FirstOrDefault(s => CheckIfSubsetFits(s).canFit);

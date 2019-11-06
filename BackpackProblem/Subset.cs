@@ -16,7 +16,7 @@ namespace BackpackProblem
 
         public override string ToString()
         {
-            return $"[{ string.Join('\n', Items.Select(i => $"( {i.ToLongString()} )")) }]";
+            return $"[{ string.Join("\n", Items.Select(i => $"( {i.ToLongString()} )")) }]";
         }
     }
 }

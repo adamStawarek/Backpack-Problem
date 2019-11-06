@@ -16,6 +16,9 @@
         public int Area => Width * Height;
         public double Ratio => (double)Area / Value;
 
+        public int SelectionCounter { get; set; }
+        public Space Space { get; set; }
+        
         public string ToLongString()
         {
             return $"Width: {Width}; Height: {Height}; Value: {Value}; Area: {Area}; Ratio: {Ratio}";

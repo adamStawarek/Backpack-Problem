@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BackpackProblem.WebApi.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace BackpackProblem.WebApi.Controllers
     public class BackpackController : ControllerBase
     {
         [HttpGet]
-        public JsonResult GetBestSetOfItems(string dataSet)
+        public JsonResult GetFromFile(string dataSet)
         {
             var container = ContainerFactory.ReadFromCsv(dataSet);
 
@@ -19,6 +20,37 @@ namespace BackpackProblem.WebApi.Controllers
             container.GeneratePowerSet();
             container.SortSubsets();
             var subset = container.FindBestSubset();
+            subset.Items.Sort((s1, s2) => s1.SelectionCounter.CompareTo(s2.SelectionCounter));
+
+            watch.Stop();
+            long elapsedMs = watch.ElapsedMilliseconds;
+
+            return new JsonResult(new
+            {
+                container.Items,
+                ContainerWidth = container.Width,
+                ContainerHeight = container.Height,
+                SelectedSubset = subset,
+                ExecutionTime = elapsedMs
+            });
+        }
+
+        [HttpGet]
+        public JsonResult GetRandom([FromQuery]GetRandomModel model)
+        {
+            var container = new ContainerBuilder()
+                .WithContainerDimensions(model.ContainerWidth,model.ContainerHeight)
+                .WithItemMaxDimensions(model.MaxItemWidth,model.MaxItemHeight)
+                .WithItemMaxValue(model.MaxItemValue)
+                .WithItems(model.NumberOfItems)
+                .Build();
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            container.GeneratePowerSet();
+            container.SortSubsets();
+            var subset = container.FindBestSubset();
+            subset.Items.Sort((s1, s2) => s1.SelectionCounter.CompareTo(s2.SelectionCounter));
 
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;
