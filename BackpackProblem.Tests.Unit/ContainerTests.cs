@@ -1,6 +1,8 @@
 using FizzWare.NBuilder;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace BackpackProblem.Tests.Unit
 {
@@ -91,12 +93,11 @@ namespace BackpackProblem.Tests.Unit
             subset.Items.Add(new Item(4, 4, 1));
             _container.AddSubset(subset);
 
-            var (canFit, spaceRemaining) = _container.CheckIfSubsetFits(subset);
+            var canFit = _container.CheckIfSubsetFits(subset);
 
             Assert.Multiple(() =>
             {
                 Assert.IsTrue(canFit);
-                Assert.AreEqual(9, spaceRemaining);
             });
         }
 
@@ -107,15 +108,14 @@ namespace BackpackProblem.Tests.Unit
             subset.Items.Add(new Item(5, 5, 1));
             subset.Items.Add(new Item(5, 5, 1));
             subset.Items.Add(new Item(5, 5, 1));
-            subset.Items.Add(new Item(6, 4, 1));
+            subset.Items.Add(new Item(6, 5, 1));
             _container.AddSubset(subset);
 
-            var (canFit, spaceRemaining) = _container.CheckIfSubsetFits(subset);
+            var canFit = _container.CheckIfSubsetFits(subset);
 
             Assert.Multiple(() =>
             {
                 Assert.IsFalse(canFit);
-                Assert.IsNull(spaceRemaining);
             });
         }
         [Test]
@@ -145,6 +145,81 @@ namespace BackpackProblem.Tests.Unit
             var subset = _container.FindBestSubset();
 
             Assert.AreEqual(subset3, subset);
+        }
+
+        [Test]
+        public void Update_When_Item_Is_2x2_Square_And_IsInserted_In_Top_Left_Corner()
+        {
+            var place = new Point(0, 0);
+            var item = new Item(2,2,1);
+            this._container.Update(item, place);
+
+            var expected = new int[10, 10];
+            expected[0, 0] = 1;
+            expected[0, 1] = 1;
+            expected[1, 0] = 1;
+            expected[1, 1] = 1;
+
+            CollectionAssert.AreEqual(expected, _container.Fields);
+        }
+
+        [Test]
+        public void Clone_Creates_New_Container_With_The_Same_Fields()
+        {
+            var newContainer = _container.Clone();
+            CollectionAssert.AreEqual(_container.Fields,newContainer.Fields);
+        }
+
+        [Test]
+        public void GetPlacesForItems_When_Item_Is_2x2_Square()
+        {
+            var tmpContainer= new Container(5,5);
+            var item1 = new Item(2,2,1);
+            tmpContainer.Update(item1,new Point(2,1));
+
+            var item2 = new Item(2, 2, 1);
+            var places = tmpContainer.GetPlacesForItems(item2);
+
+            var expected = new List<Point>()
+            {
+                new Point(0,0),
+                new Point(0,1),
+                new Point(0,2),
+                new Point(0,3),
+                new Point(1,3),
+                new Point(2,3),
+                new Point(3,3)
+
+            };
+            CollectionAssert.AreEquivalent( expected,places);
+        }
+
+        [Test]
+        public void CheckIfItemFits_When_Item_Can_Fit()
+        {
+            var place1 = new Point(0, 0);
+            var item1 = new Item(2, 2, 1);
+            this._container.Update(item1, place1);
+
+            var place2 = new Point(2, 2);
+            var item2 = new Item(2, 2, 1);
+
+            var canFit = _container.CheckIfItemFits(item2, place2);
+            Assert.IsTrue(canFit);
+        }
+
+        [Test]
+        public void CheckIfItemFits_When_Item_Cannot_Fit()
+        {
+            var place1 = new Point(0, 0);
+            var item1 = new Item(2, 2, 1);
+            this._container.Update(item1, place1);
+
+            var place2 = new Point(1, 1);
+            var item2 = new Item(2, 2, 1);
+
+            var canFit = _container.CheckIfItemFits(item2, place2);
+            Assert.IsFalse(canFit);
         }
     }
 }

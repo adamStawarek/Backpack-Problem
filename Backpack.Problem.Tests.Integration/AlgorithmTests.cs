@@ -1,6 +1,5 @@
 using BackpackProblem;
 using NUnit.Framework;
-using System;
 
 namespace Backpack.Problem.Tests.Integration
 {

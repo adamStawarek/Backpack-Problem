@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using BackpackProblem.WebApi.Models;
+﻿using BackpackProblem.WebApi.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace BackpackProblem.WebApi.Controllers
 {
@@ -39,8 +39,8 @@ namespace BackpackProblem.WebApi.Controllers
         public JsonResult GetRandom([FromQuery]GetRandomModel model)
         {
             var container = new ContainerBuilder()
-                .WithContainerDimensions(model.ContainerWidth,model.ContainerHeight)
-                .WithItemMaxDimensions(model.MaxItemWidth,model.MaxItemHeight)
+                .WithContainerDimensions(model.ContainerWidth, model.ContainerHeight)
+                .WithItemMaxDimensions(model.MaxItemWidth, model.MaxItemHeight)
                 .WithItemMaxValue(model.MaxItemValue)
                 .WithItems(model.NumberOfItems)
                 .Build();

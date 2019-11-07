@@ -18,7 +18,7 @@
 
         public int SelectionCounter { get; set; }
         public Space Space { get; set; }
-        
+
         public string ToLongString()
         {
             return $"Width: {Width}; Height: {Height}; Value: {Value}; Area: {Area}; Ratio: {Ratio}";

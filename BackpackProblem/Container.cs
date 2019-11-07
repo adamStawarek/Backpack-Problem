@@ -1,25 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace BackpackProblem
 {
     public class Container
     {
+        public int Width { get; }
+        public int Height { get; }
+        public List<Item> Items { get; }
+        public List<Subset> Subsets { get; set; }
+        public int Area => Width * Height;
+        public int[,] Fields { get; set; }
+
         public Container(int width, int height)
         {
             Width = width;
             Height = height;
             Items = new List<Item>();
             Subsets = new List<Subset>();
+            Fields = new int[height,width];
         }
-
-        public int Width { get; }
-        public int Height { get; }
-        public List<Item> Items { get; }
-        public List<Subset> Subsets { get; set; }
-        public int Area => Width * Height;
-
+        
         public void AddItem(Item item)
         {
             if ((item.Height <= Height && item.Width <= Width) || (item.Height <= Width && item.Width <= Height))
@@ -59,51 +62,99 @@ namespace BackpackProblem
             });
         }
 
-        public (bool canFit, int? spaceRemaining) CheckIfSubsetFits(Subset subset)
+        public Subset FindBestSubset()
         {
-            var spaces = new List<Space> { new Space(0, 0, Width, Height) };
-            int counter = 0;
-            
-            foreach (var item in subset.Items.OrderByDescending(i => i.Area))
+            return Subsets.FirstOrDefault(CheckIfSubsetFits);
+        }
+
+        public bool CheckIfSubsetFits(Subset subset)
+        {
+            var subsetPermutations = subset.GetPermutations();
+            foreach (var permutation in subsetPermutations)
             {
-                var space = spaces.Where(s => s.CanFit(item)).OrderBy(s=>s.Area).FirstOrDefault();
-                if (space == null)
+                if (CanFit(new Stack<Item>(permutation), this))
                 {
-                    return (false, null); //item does not fit space
+                    return true;
                 }
-                else
+            }
+            return false;
+        }
+
+        public bool CheckIfItemFits(Item item, Point point)
+        {
+            if (item.Width + point.X > Width || item.Height + point.Y > Height) return false;
+
+            for (int i = 0; i < item.Width; i++)
+            {
+                for (int j = 0; j < item.Height; j++)
                 {
-                    item.Space = new Space(space.X, space.Y,space.Width,space.Height);
-                    item.SelectionCounter = ++counter;
-                    if ((space.Width == item.Width && space.Height == item.Height) ||
-                        (space.Height == item.Width && space.Width == item.Height))
-                    {
-                        spaces.Remove(space); //item cover all space
-                    }
-                    else if (item.Height == space.Height)
-                    {
-                        space.Width -= item.Width;
-                        space.X += item.Width;
-                    }
-                    else if (item.Width == space.Width)
-                    {
-                        space.Height -= item.Height;
-                        space.Y += item.Height;
-                    }
-                    else
-                    {
-                        spaces.Add(new Space(space.X, space.Y+item.Height, item.Width, space.Height - item.Height));
-                        spaces.Add(new Space(space.X + item.Width, space.Y, space.Width- item.Width, space.Height));
-                        spaces.Remove(space);
-                    }
+                    if (Fields[ point.Y + j, point.X + i] == 1)
+                        return false;
                 }
             }
 
-            return (true, spaces.Sum(s => s.Area));
+            return true;
         }
-        public Subset FindBestSubset()
+
+        public bool CanFit(Stack<Item> items, Container container)
         {
-            return Subsets.FirstOrDefault(s => CheckIfSubsetFits(s).canFit);
+            var item = items.Pop();
+            var places = container.GetPlacesForItems(item).ToArray();
+
+            if (!places.Any()) return false;
+
+            if (!items.Any())
+            {
+                Console.WriteLine(item+": "+places.First());
+                return true;
+            };
+
+            foreach (var place in places)
+            {
+                var newContainer = container.Clone();
+                newContainer.Update(item, place);
+                if (CanFit(new Stack<Item>(items), newContainer))
+                {
+                    Console.WriteLine(item + ": " + place);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void Update(Item item, Point point)
+        {
+            for (int i = 0; i < item.Width; i++)
+            {
+                for (int j = 0; j < item.Height; j++)
+                {
+                    Fields[ point.Y + j, point.X + i] = 1;
+                }
+            }
+        }
+
+        public Container Clone()
+        {
+            var newContainer = new Container(this.Width, this.Height)
+            {
+                Fields = this.Fields.Clone() as int[,]
+            };
+            return newContainer;
+        }
+
+        public IEnumerable<Point> GetPlacesForItems(Item item)
+        {
+            var upperLeftCorners = new List<Point>();
+            for (int i = 0; i <= Width - item.Width; i++)
+            {
+                for (int j = 0; j <= Height - item.Height; j++)
+                {
+                    upperLeftCorners.Add(new Point(i,j));
+                }
+            }
+
+            return upperLeftCorners.Where(p => CheckIfItemFits(item, p));
         }
 
         public void GeneratePowerSet()
