@@ -1,11 +1,10 @@
-﻿using System;
-using BackpackProblem.WebApi.Models;
+﻿using BackpackProblem.WebApi.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace BackpackProblem.WebApi.Controllers
 {
@@ -53,6 +52,7 @@ namespace BackpackProblem.WebApi.Controllers
         }
 
         [HttpGet]
+        [ValidateModelState]
         public JsonResult GetRandom([FromQuery]GetRandomModel model)
         {
             var container = new ContainerBuilder()
@@ -78,10 +78,22 @@ namespace BackpackProblem.WebApi.Controllers
 
             return new JsonResult(new
             {
-                container.Items,
+                Items = container.Items.Select(s => new
+                {
+                    s.Width,
+                    s.Height,
+                    s.Value
+                }),
                 ContainerWidth = container.Width,
                 ContainerHeight = container.Height,
-                SelectedSubset = subset,
+                SelectedSubset = subset.Items.Select(s => new
+                {
+                    s.Width,
+                    s.Height,
+                    s.Value,
+                    s.UpperLeftCornerPoint,
+                    s.DimensionsSwapped
+                }),
                 ExecutionTime = elapsedMs
             });
         }
