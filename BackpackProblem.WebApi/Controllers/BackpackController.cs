@@ -20,7 +20,6 @@ namespace BackpackProblem.WebApi.Controllers
             container.GeneratePowerSet();
             container.SortSubsets();
             var subset = container.FindBestSubset();
-            subset.Items.Sort((s1, s2) => s1.SelectionCounter.CompareTo(s2.SelectionCounter));
 
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;
@@ -50,7 +49,6 @@ namespace BackpackProblem.WebApi.Controllers
             container.GeneratePowerSet();
             container.SortSubsets();
             var subset = container.FindBestSubset();
-            subset.Items.Sort((s1, s2) => s1.SelectionCounter.CompareTo(s2.SelectionCounter));
 
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;

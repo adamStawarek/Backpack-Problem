@@ -106,6 +106,7 @@ namespace BackpackProblem
             if (!items.Any())
             {
                 Console.WriteLine(item+": "+places.First());
+                item.UpperLeftCornerPoint = places.First();
                 return true;
             };
 
@@ -116,6 +117,7 @@ namespace BackpackProblem
                 if (CanFit(new Stack<Item>(items), newContainer))
                 {
                     Console.WriteLine(item + ": " + place);
+                    item.UpperLeftCornerPoint = place;
                     return true;
                 }
             }

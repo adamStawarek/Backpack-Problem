@@ -1,4 +1,6 @@
-﻿namespace BackpackProblem
+﻿using System.Drawing;
+
+namespace BackpackProblem
 {
     public class Item
     {
@@ -16,8 +18,7 @@
         public int Area => Width * Height;
         public double Ratio => (double)Area / Value;
 
-        public int SelectionCounter { get; set; }
-        public Space Space { get; set; }
+        public Point UpperLeftCornerPoint { get; set; }
 
         public string ToLongString()
         {
