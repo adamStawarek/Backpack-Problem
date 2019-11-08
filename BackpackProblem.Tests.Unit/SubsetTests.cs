@@ -7,7 +7,7 @@ namespace BackpackProblem.Tests.Unit
     public class SubsetTests
     {
         private readonly Subset _subset = new Subset();
-        private readonly Item _item1 = new Item(1,0,0);
+        private readonly Item _item1 = new Item(1, 0, 0);
         private readonly Item _item2 = new Item(0, 1, 0);
         private readonly Item _item3 = new Item(0, 0, 1);
 

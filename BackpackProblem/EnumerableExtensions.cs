@@ -1,10 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace BackpackProblem
 {
-    public static class ListExtensions
+    public static class EnumerableExtensions
     {
         public static IEnumerable<IEnumerable<T>> GetPermutations<T>(this IEnumerable<T> set, IEnumerable<T> subset = null) where T : class
         {

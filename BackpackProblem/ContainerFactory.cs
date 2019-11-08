@@ -5,7 +5,7 @@ namespace BackpackProblem
 {
     public static class ContainerFactory
     {
-        public static Container ReadFromCsv(string path, char separator = ' ')
+        public static Container ReadFromFile(string path, char separator = ' ')
         {
             using (var reader = new StreamReader(path))
             {

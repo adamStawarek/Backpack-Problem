@@ -238,7 +238,7 @@ namespace BackpackProblem.Tests.Unit
             Assert.Multiple(() =>
             {
                 Assert.IsTrue(canFit);
-                Assert.IsTrue(items.Last().DimensionsSwaped);
+                Assert.IsTrue(items.Last().DimensionsSwapped);
             });
         }
     }

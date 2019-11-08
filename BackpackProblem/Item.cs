@@ -19,14 +19,14 @@ namespace BackpackProblem
         public double Ratio => (double)Area / Value;
 
         public Point UpperLeftCornerPoint { get; set; }
-        public bool DimensionsSwaped { get; set; }
+        public bool DimensionsSwapped { get; set; }
 
         public void SwapDimensions()
         {
             var tmp = Width;
             Width = Height;
             Height = tmp;
-            DimensionsSwaped = !DimensionsSwaped;
+            DimensionsSwapped = !DimensionsSwapped;
         }
 
         public string ToLongString()

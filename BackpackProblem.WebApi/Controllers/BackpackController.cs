@@ -1,7 +1,11 @@
-﻿using BackpackProblem.WebApi.Models;
+﻿using System;
+using BackpackProblem.WebApi.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace BackpackProblem.WebApi.Controllers
 {
@@ -10,10 +14,12 @@ namespace BackpackProblem.WebApi.Controllers
     [ApiController]
     public class BackpackController : ControllerBase
     {
+        private readonly string _dataSetDirectory = Directory.GetCurrentDirectory() + "/DataSets";
+
         [HttpGet]
         public JsonResult GetFromFile(string dataSet)
         {
-            var container = ContainerFactory.ReadFromCsv(dataSet);
+            var container = ContainerFactory.ReadFromFile($"{_dataSetDirectory}/{dataSet}");
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -26,10 +32,22 @@ namespace BackpackProblem.WebApi.Controllers
 
             return new JsonResult(new
             {
-                container.Items,
+                Items = container.Items.Select(s => new
+                {
+                    s.Width,
+                    s.Height,
+                    s.Value
+                }),
                 ContainerWidth = container.Width,
                 ContainerHeight = container.Height,
-                SelectedSubset = subset,
+                SelectedSubset = subset.Items.Select(s => new
+                {
+                    s.Width,
+                    s.Height,
+                    s.Value,
+                    s.UpperLeftCornerPoint,
+                    s.DimensionsSwapped
+                }),
                 ExecutionTime = elapsedMs
             });
         }
@@ -53,6 +71,11 @@ namespace BackpackProblem.WebApi.Controllers
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;
 
+            if (model.SaveItems)
+            {
+                this.SaveItemsToFile(container.Width, container.Height, container.Items);
+            }
+
             return new JsonResult(new
             {
                 container.Items,
@@ -66,12 +89,19 @@ namespace BackpackProblem.WebApi.Controllers
         [HttpGet]
         public IEnumerable<string> GetAvailableDataSets()
         {
-            return new string[]
-            {
-                "data-5.csv",
-                "data-10.csv",
-                "data-20.csv"
-            };
+            return Directory.GetFiles(_dataSetDirectory).Select(f => f.Split(@"\").Last());
         }
+
+        private void SaveItemsToFile(int containerWidth, int containerHeight, List<Item> containerItems)
+        {
+            Directory.CreateDirectory("Datasets");
+            using (var file = new StreamWriter($"{_dataSetDirectory}/backpack_{DateTime.Now.ToString("s").Replace(":", "-")}_{containerWidth}-{containerHeight}-{containerItems.Count}.txt"))
+            {
+                file.WriteLine($"{containerWidth} {containerHeight}");
+                file.WriteLine(containerItems.Count.ToString());
+                containerItems.ForEach(item => file.WriteLine($"{item.Width} {item.Height} {item.Height}"));
+            }
+        }
+
     }
 }

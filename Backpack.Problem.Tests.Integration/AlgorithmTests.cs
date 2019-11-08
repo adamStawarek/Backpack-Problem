@@ -9,7 +9,7 @@ namespace Backpack.Problem.Tests.Integration
         [Test]
         public void SmallDataSet()
         {
-            var container = ContainerFactory.ReadFromCsv("data-5.csv");
+            var container = ContainerFactory.ReadFromFile("data-5.csv");
             container.GeneratePowerSet();
             container.SortSubsets();
             var subset = container.FindBestSubset();

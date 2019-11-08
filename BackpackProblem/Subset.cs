@@ -10,7 +10,7 @@ namespace BackpackProblem
             Items = new List<Item>();
         }
 
-        public List<Item> Items { get; }
+        public List<Item> Items { get; set; }
         public int TotalArea => Items.Sum(i => i.Area);
         public int TotalValue => Items.Sum(i => i.Value);
 

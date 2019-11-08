@@ -8,5 +8,6 @@
         public int ContainerWidth { get; set; }
         public int ContainerHeight { get; set; }
         public int NumberOfItems { get; set; }
+        public bool SaveItems { get; set; }
     }
 }

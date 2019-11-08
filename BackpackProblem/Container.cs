@@ -74,6 +74,7 @@ namespace BackpackProblem
             {
                 if (CanFit(new Stack<Item>(permutation), this))
                 {
+                    subset.Items = permutation.ToList();
                     return true;
                 }
             }
