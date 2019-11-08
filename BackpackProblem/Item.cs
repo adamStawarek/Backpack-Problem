@@ -11,14 +11,23 @@ namespace BackpackProblem
             Value = value;
         }
 
-        public int Width { get; }
-        public int Height { get; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public int Value { get; }
 
         public int Area => Width * Height;
         public double Ratio => (double)Area / Value;
 
         public Point UpperLeftCornerPoint { get; set; }
+        public bool DimensionsSwaped { get; set; }
+
+        public void SwapDimensions()
+        {
+            var tmp = Width;
+            Width = Height;
+            Height = tmp;
+            DimensionsSwaped = !DimensionsSwaped;
+        }
 
         public string ToLongString()
         {

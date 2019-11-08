@@ -20,9 +20,9 @@ namespace BackpackProblem
             Height = height;
             Items = new List<Item>();
             Subsets = new List<Subset>();
-            Fields = new int[height,width];
+            Fields = new int[height, width];
         }
-        
+
         public void AddItem(Item item)
         {
             if ((item.Height <= Height && item.Width <= Width) || (item.Height <= Width && item.Width <= Height))
@@ -88,7 +88,7 @@ namespace BackpackProblem
             {
                 for (int j = 0; j < item.Height; j++)
                 {
-                    if (Fields[ point.Y + j, point.X + i] == 1)
+                    if (Fields[point.Y + j, point.X + i] == 1)
                         return false;
                 }
             }
@@ -100,13 +100,18 @@ namespace BackpackProblem
         {
             var item = items.Pop();
             var places = container.GetPlacesForItems(item).ToArray();
+            var placesWhenDimensionsSwapped = item.Width.Equals(item.Height)
+                ? Array.Empty<Point>()
+                : container.GetPlacesForItems(new Item(item.Height, item.Width, item.Value)).ToArray();
 
-            if (!places.Any()) return false;
+
+            if (!places.Any() && !placesWhenDimensionsSwapped.Any()) return false;
 
             if (!items.Any())
             {
-                Console.WriteLine(item+": "+places.First());
-                item.UpperLeftCornerPoint = places.First();
+                var place = places.Any() ? places.First() : placesWhenDimensionsSwapped.First();
+                Console.WriteLine(item + ": " + place);
+                item.UpperLeftCornerPoint = place;
                 return true;
             };
 
@@ -122,6 +127,23 @@ namespace BackpackProblem
                 }
             }
 
+            if (placesWhenDimensionsSwapped.Any())
+            {
+                item.SwapDimensions();
+                foreach (var place in placesWhenDimensionsSwapped)
+                {
+                    var newContainer = container.Clone();
+                    newContainer.Update(item, place);
+                    if (CanFit(new Stack<Item>(items), newContainer))
+                    {
+                        Console.WriteLine(item + ": " + place);
+                        item.UpperLeftCornerPoint = place;
+                        return true;
+                    }
+                }
+                item.SwapDimensions();
+            }
+
             return false;
         }
 
@@ -131,7 +153,7 @@ namespace BackpackProblem
             {
                 for (int j = 0; j < item.Height; j++)
                 {
-                    Fields[ point.Y + j, point.X + i] = 1;
+                    Fields[point.Y + j, point.X + i] = 1;
                 }
             }
         }
@@ -152,7 +174,7 @@ namespace BackpackProblem
             {
                 for (int j = 0; j <= Height - item.Height; j++)
                 {
-                    upperLeftCorners.Add(new Point(i,j));
+                    upperLeftCorners.Add(new Point(i, j));
                 }
             }
 

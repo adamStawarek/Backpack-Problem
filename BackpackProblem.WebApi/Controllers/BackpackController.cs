@@ -70,8 +70,7 @@ namespace BackpackProblem.WebApi.Controllers
             {
                 "data-5.csv",
                 "data-10.csv",
-                "data-20.csv",
-                "data-25.csv"
+                "data-20.csv"
             };
         }
     }

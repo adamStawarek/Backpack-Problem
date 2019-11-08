@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace BackpackProblem.Tests.Unit
 {
@@ -118,6 +119,7 @@ namespace BackpackProblem.Tests.Unit
                 Assert.IsFalse(canFit);
             });
         }
+
         [Test]
         public void Given_Subsets_Which_Items_Fits_Container_FindBestSubset_Returns_Subset_With_Highest_TotalValue()
         {
@@ -151,7 +153,7 @@ namespace BackpackProblem.Tests.Unit
         public void Update_When_Item_Is_2x2_Square_And_IsInserted_In_Top_Left_Corner()
         {
             var place = new Point(0, 0);
-            var item = new Item(2,2,1);
+            var item = new Item(2, 2, 1);
             this._container.Update(item, place);
 
             var expected = new int[10, 10];
@@ -167,15 +169,15 @@ namespace BackpackProblem.Tests.Unit
         public void Clone_Creates_New_Container_With_The_Same_Fields()
         {
             var newContainer = _container.Clone();
-            CollectionAssert.AreEqual(_container.Fields,newContainer.Fields);
+            CollectionAssert.AreEqual(_container.Fields, newContainer.Fields);
         }
 
         [Test]
         public void GetPlacesForItems_When_Item_Is_2x2_Square()
         {
-            var tmpContainer= new Container(5,5);
-            var item1 = new Item(2,2,1);
-            tmpContainer.Update(item1,new Point(2,1));
+            var tmpContainer = new Container(5, 5);
+            var item1 = new Item(2, 2, 1);
+            tmpContainer.Update(item1, new Point(2, 1));
 
             var item2 = new Item(2, 2, 1);
             var places = tmpContainer.GetPlacesForItems(item2);
@@ -191,7 +193,7 @@ namespace BackpackProblem.Tests.Unit
                 new Point(3,3)
 
             };
-            CollectionAssert.AreEquivalent( expected,places);
+            CollectionAssert.AreEquivalent(expected, places);
         }
 
         [Test]
@@ -220,6 +222,24 @@ namespace BackpackProblem.Tests.Unit
 
             var canFit = _container.CheckIfItemFits(item2, place2);
             Assert.IsFalse(canFit);
+        }
+
+        [Test]
+        public void CanFit_Only_When_One_Item_Is_Swapped()
+        {
+            var items = new Stack<Item>();
+            items.Push(new Item(4, 1, 1));
+            items.Push(new Item(1, 2, 1));
+            items.Push(new Item(1, 2, 1));
+
+            var tmpContainer = new Container(2, 4);
+            var canFit = tmpContainer.CanFit(items, tmpContainer);
+
+            Assert.Multiple(() =>
+            {
+                Assert.IsTrue(canFit);
+                Assert.IsTrue(items.Last().DimensionsSwaped);
+            });
         }
     }
 }
