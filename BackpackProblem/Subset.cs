@@ -14,11 +14,6 @@ namespace BackpackProblem
         public int TotalArea => Items.Sum(i => i.Area);
         public int TotalValue => Items.Sum(i => i.Value);
 
-        public IEnumerable<IEnumerable<Item>> GetPermutations()
-        {
-            return this.Items.GetPermutations();
-        }
-
         public override string ToString()
         {
             return $"[{ string.Join("\n", Items.Select(i => $"( {i.ToLongString()} )")) }]";

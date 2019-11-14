@@ -51,14 +51,13 @@ namespace BackpackProblem
                 {
                     return 0;
                 }
-                else if (A.TotalValue > B.TotalValue)
+
+                if (A.TotalValue > B.TotalValue)
                 {
                     return -1;
                 }
-                else
-                {
-                    return 1;
-                }
+
+                return 1;
             });
         }
 
@@ -69,16 +68,7 @@ namespace BackpackProblem
 
         public bool CheckIfSubsetFits(Subset subset)
         {
-            var subsetPermutations = subset.GetPermutations();
-            foreach (var permutation in subsetPermutations)
-            {
-                if (CanFit(new Stack<Item>(permutation), this))
-                {
-                    subset.Items = permutation.ToList();
-                    return true;
-                }
-            }
-            return false;
+            return CanFit(new Stack<Item>(subset.Items), this);
         }
 
         public bool CheckIfItemFits(Item item, Point point)
