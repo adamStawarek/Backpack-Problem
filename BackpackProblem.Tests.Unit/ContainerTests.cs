@@ -211,7 +211,7 @@ namespace BackpackProblem.Tests.Unit
         }
 
         [Test]
-        public void CheckIfItemFits_When_Item_Cannot_Fit()
+        public void CheckIfItemFits_When_Item_Overlap_Another_Item()
         {
             var place1 = new Point(0, 0);
             var item1 = new Item(2, 2, 1);
@@ -221,6 +221,17 @@ namespace BackpackProblem.Tests.Unit
             var item2 = new Item(2, 2, 1);
 
             var canFit = _container.CheckIfItemFits(item2, place2);
+            Assert.IsFalse(canFit);
+        }
+
+        [Test]
+        public void CheckIfItemFits_When_Item_Is_Out_Of_Container()
+        {
+            var container = new Container(5,5);
+            var place = new Point(1, 3);
+            var item = new Item(1, 3, 1);
+
+            var canFit = container.CheckIfItemFits(item, place);
             Assert.IsFalse(canFit);
         }
 
