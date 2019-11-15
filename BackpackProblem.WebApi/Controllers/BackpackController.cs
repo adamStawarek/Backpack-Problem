@@ -18,15 +18,16 @@ namespace BackpackProblem.WebApi.Controllers
         private readonly string _dataSetDirectory = Directory.GetCurrentDirectory() + "/DataSets";
 
         [HttpGet]
-        public JsonResult GetFromFile(string dataSet)
+        public async Task<JsonResult> GetFromDataSet([FromQuery]GetFromFileModel model)
         {
-            var container = ContainerFactory.ReadFromFile($"{_dataSetDirectory}/{dataSet}");
+            var container = ContainerFactory.ReadFromFile($"{_dataSetDirectory}/{model.DataSet}");
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             container.GeneratePowerSet();
             container.SortSubsets();
-            var subset = container.FindBestSubset();
+            var subset = model.ExecuteAsync ? await container.FindBestSubsetAsync() :
+                container.FindBestSubset();
 
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;
@@ -55,7 +56,7 @@ namespace BackpackProblem.WebApi.Controllers
 
         [HttpGet]
         [ValidateModelState]
-        public JsonResult GetRandom([FromQuery]GetRandomModel model)
+        public async Task<JsonResult> GetRandom([FromQuery]GetRandomModel model)
         {
             var container = new ContainerBuilder()
                 .WithContainerDimensions(model.ContainerWidth, model.ContainerHeight)
@@ -68,7 +69,8 @@ namespace BackpackProblem.WebApi.Controllers
 
             container.GeneratePowerSet();
             container.SortSubsets();
-            var subset = container.FindBestSubset();
+            var subset = model.ExecuteAsync ? await container.FindBestSubsetAsync() :
+                container.FindBestSubset();
 
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;

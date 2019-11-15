@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BackpackProblem
 {
@@ -64,6 +65,30 @@ namespace BackpackProblem
         public Subset FindBestSubset()
         {
             return Subsets.FirstOrDefault(CheckIfSubsetFits);
+        }
+
+        public async Task<Subset> FindBestSubsetAsync()
+        {
+            int numberOfThreads = Environment.ProcessorCount;
+            for (int i = 0; i < Subsets.Count; i += numberOfThreads)
+            {
+                var tasks = new Task<Subset>[numberOfThreads];
+                for (int j = 0; j < numberOfThreads; j++)
+                {
+                    var subset = Subsets[i + j];
+                    Task<Subset> task = Task.Factory.StartNew(() => CheckIfSubsetFits(subset)
+                        ? subset : null);
+                    tasks[j] = task;
+                }
+                var results = await Task.WhenAll(tasks);
+
+                if (results.Any(r => r != null))
+                {
+                    return results.First(r => r != null);
+                }
+            }
+
+            return null;
         }
 
         public bool CheckIfSubsetFits(Subset subset)
