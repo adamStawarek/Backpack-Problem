@@ -1,12 +1,10 @@
 ﻿using BackpackProblem.WebApi.Models;
 using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BackpackProblem.WebApi.Controllers
 {
@@ -100,17 +98,6 @@ namespace BackpackProblem.WebApi.Controllers
                 }),
                 ExecutionTime = elapsedMs
             });
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> UploadDataSet(IFormFile file)
-        {
-            using (var fileStream = new FileStream(Path.Combine(_dataSetDirectory, file.FileName),
-                FileMode.Create))
-            {
-                await file.CopyToAsync(fileStream);
-                return Ok();
-            }
         }
 
         [HttpGet]
