@@ -50,7 +50,9 @@ namespace BackpackProblem.WebApi.Controllers
                     s.UpperLeftCornerPoint,
                     s.DimensionsSwapped
                 }),
-                ExecutionTime = elapsedMs
+                ExecutionTime = elapsedMs,
+                TotalArea = subset.TotalArea,
+                TotalValue = subset.TotalValue
             });
         }
 
@@ -98,7 +100,9 @@ namespace BackpackProblem.WebApi.Controllers
                     s.UpperLeftCornerPoint,
                     s.DimensionsSwapped
                 }),
-                ExecutionTime = elapsedMs
+                ExecutionTime = elapsedMs,
+                TotalArea = subset.TotalArea,
+                TotalValue = subset.TotalValue
             });
         }
 
