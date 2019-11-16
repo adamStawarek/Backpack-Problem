@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BackpackProblem
@@ -78,7 +79,7 @@ namespace BackpackProblem
 
         public async Task<Subset> FindBestSubsetAsync()
         {
-            int numberOfThreads = Environment.ProcessorCount;
+            int numberOfThreads = 4;
             for (int i = 0; i < Subsets.Count; i += numberOfThreads)
             {
                 var tasks = new Task<(Subset subset, IEnumerable<Item> items)>[numberOfThreads];
@@ -159,7 +160,7 @@ namespace BackpackProblem
             {
                 var newContainer = container.Clone();
                 newContainer.Update(item, place);
-                if (CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
+                if (newContainer.CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
                 {
 #if DEBUG
                     Console.WriteLine(item + ": " + place);
@@ -177,7 +178,7 @@ namespace BackpackProblem
                 {
                     var newContainer = container.Clone();
                     newContainer.Update(item, place);
-                    if (CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
+                    if (newContainer.CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
                     {
 #if DEBUG
                         Console.WriteLine(item + ": " + place + " (swapped)");
