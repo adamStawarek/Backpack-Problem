@@ -64,7 +64,16 @@ namespace BackpackProblem
 
         public Subset FindBestSubset()
         {
-            return Subsets.FirstOrDefault(CheckIfSubsetFits);
+            foreach (var subset in Subsets)
+            {
+                var result = CheckIfSubsetFits(subset);
+                if (result.canFit)
+                {
+                    subset.Items = result.items.ToList();
+                    return subset;
+                }
+            }
+            return null;
         }
 
         public async Task<Subset> FindBestSubsetAsync()
@@ -72,28 +81,33 @@ namespace BackpackProblem
             int numberOfThreads = Environment.ProcessorCount;
             for (int i = 0; i < Subsets.Count; i += numberOfThreads)
             {
-                var tasks = new Task<Subset>[numberOfThreads];
+                var tasks = new Task<(Subset subset, IEnumerable<Item> items)>[numberOfThreads];
                 for (int j = 0; j < numberOfThreads; j++)
                 {
                     var subset = Subsets[i + j];
-                    Task<Subset> task = Task.Factory.StartNew(() => CheckIfSubsetFits(subset)
-                        ? subset : null);
+                    Task<(Subset, IEnumerable<Item>)> task = Task.Factory.StartNew(() =>
+                        {
+                            var (canFit, items) = CheckIfSubsetFits(subset);
+                            return (subset, items);
+                        });
                     tasks[j] = task;
                 }
                 var results = await Task.WhenAll(tasks);
 
-                if (results.Any(r => r != null))
+                if (results.Any(r => r.items != null))
                 {
-                    return results.First(r => r != null);
+                    var result = results.First(r => r.items != null);
+                    result.subset.Items = result.items.ToList();
+                    return result.subset;
                 }
             }
 
             return null;
         }
 
-        public bool CheckIfSubsetFits(Subset subset)
+        public (bool canFit, IEnumerable<Item> items) CheckIfSubsetFits(Subset subset)
         {
-            return CanFit(new Stack<Item>(subset.Items), this);
+            return (CanFit(new Stack<Item>(subset.Items.Select(i=>i.Clone())), this, out List<Item> changedItems), changedItems);
         }
 
         public bool CheckIfItemFits(Item item, Point point)
@@ -112,7 +126,7 @@ namespace BackpackProblem
             return true;
         }
 
-        public bool CanFit(Stack<Item> items, Container container)
+        public bool CanFit(Stack<Item> items, Container container, out List<Item> changedItems)
         {
             var item = items.Pop();
             var places = container.GetPlacesForItems(item).ToArray();
@@ -126,6 +140,7 @@ namespace BackpackProblem
 #if DEBUG
                 Console.WriteLine($"Can't fit item: {item}");
 #endif
+                changedItems = null;
                 return false;
             }
 
@@ -136,6 +151,7 @@ namespace BackpackProblem
                 Console.WriteLine(item + ": " + place + (places.Any() ? "" : " (swapped)"));
 #endif
                 item.UpperLeftCornerPoint = place;
+                changedItems = new List<Item>{ item };
                 return true;
             };
 
@@ -143,12 +159,13 @@ namespace BackpackProblem
             {
                 var newContainer = container.Clone();
                 newContainer.Update(item, place);
-                if (CanFit(new Stack<Item>(items), newContainer))
+                if (CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
                 {
 #if DEBUG
                     Console.WriteLine(item + ": " + place);
 #endif
                     item.UpperLeftCornerPoint = place;
+                    changedItems.Add(item);
                     return true;
                 }
             }
@@ -160,18 +177,20 @@ namespace BackpackProblem
                 {
                     var newContainer = container.Clone();
                     newContainer.Update(item, place);
-                    if (CanFit(new Stack<Item>(items), newContainer))
+                    if (CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
                     {
 #if DEBUG
                         Console.WriteLine(item + ": " + place + " (swapped)");
 #endif
                         item.UpperLeftCornerPoint = place;
+                        changedItems.Add(item);
                         return true;
                     }
                 }
                 item.SwapDimensions();
             }
 
+            changedItems = null;
             return false;
         }
 

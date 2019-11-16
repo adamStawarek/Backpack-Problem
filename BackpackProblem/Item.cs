@@ -18,6 +18,15 @@ namespace BackpackProblem
             Value = value;
         }
 
+        public Item Clone()
+        {
+            return new Item(Width,Height,Value)
+            {
+                DimensionsSwapped = DimensionsSwapped,
+                UpperLeftCornerPoint = UpperLeftCornerPoint
+            };
+        }
+
         public void SwapDimensions()
         {
             var tmp = Width;

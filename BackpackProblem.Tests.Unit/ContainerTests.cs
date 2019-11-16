@@ -94,12 +94,9 @@ namespace BackpackProblem.Tests.Unit
             subset.Items.Add(new Item(4, 4, 1));
             _container.AddSubset(subset);
 
-            var canFit = _container.CheckIfSubsetFits(subset);
+            var result = _container.CheckIfSubsetFits(subset);
 
-            Assert.Multiple(() =>
-            {
-                Assert.IsTrue(canFit);
-            });
+            Assert.IsTrue(result.canFit);
         }
 
         [Test]
@@ -112,12 +109,9 @@ namespace BackpackProblem.Tests.Unit
             subset.Items.Add(new Item(6, 5, 1));
             _container.AddSubset(subset);
 
-            var canFit = _container.CheckIfSubsetFits(subset);
+            var result = _container.CheckIfSubsetFits(subset);
 
-            Assert.Multiple(() =>
-            {
-                Assert.IsFalse(canFit);
-            });
+            Assert.IsFalse(result.canFit);
         }
 
         [Test]
@@ -227,7 +221,7 @@ namespace BackpackProblem.Tests.Unit
         [Test]
         public void CheckIfItemFits_When_Item_Is_Out_Of_Container()
         {
-            var container = new Container(5,5);
+            var container = new Container(5, 5);
             var place = new Point(1, 3);
             var item = new Item(1, 3, 1);
 
@@ -244,12 +238,12 @@ namespace BackpackProblem.Tests.Unit
             items.Push(new Item(1, 2, 1));
 
             var tmpContainer = new Container(2, 4);
-            var canFit = tmpContainer.CanFit(items, tmpContainer);
+            var canFit = tmpContainer.CanFit(items, tmpContainer, out List<Item> changedItems);
 
             Assert.Multiple(() =>
             {
                 Assert.IsTrue(canFit);
-                Assert.IsTrue(items.Last().DimensionsSwapped);
+                Assert.IsTrue(changedItems.Single(r => r.Height == 4).DimensionsSwapped);
             });
         }
     }
