@@ -133,7 +133,7 @@ namespace BackpackProblem
             {
                 var place = places.Any() ? places.First() : placesWhenDimensionsSwapped.First();
 #if DEBUG
-                Console.WriteLine(item + ": " + place); 
+                Console.WriteLine(item + ": " + place + (places.Any() ? "" : " (swapped)"));
 #endif
                 item.UpperLeftCornerPoint = place;
                 return true;
@@ -146,7 +146,7 @@ namespace BackpackProblem
                 if (CanFit(new Stack<Item>(items), newContainer))
                 {
 #if DEBUG
-                    Console.WriteLine(item + ": " + place); 
+                    Console.WriteLine(item + ": " + place);
 #endif
                     item.UpperLeftCornerPoint = place;
                     return true;
@@ -163,7 +163,7 @@ namespace BackpackProblem
                     if (CanFit(new Stack<Item>(items), newContainer))
                     {
 #if DEBUG
-                        Console.WriteLine(item + ": " + place+" (swapped)"); 
+                        Console.WriteLine(item + ": " + place + " (swapped)");
 #endif
                         item.UpperLeftCornerPoint = place;
                         return true;
