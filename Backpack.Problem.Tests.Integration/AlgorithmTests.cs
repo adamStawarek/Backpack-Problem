@@ -16,5 +16,16 @@ namespace Backpack.Problem.Tests.Integration
 
             Assert.AreEqual(255, subset.TotalArea);
         }
+
+        [Test]
+        public void BigDataSet()
+        {
+            var container = ContainerFactory.ReadFromFile("data-20.csv");
+            container.GeneratePowerSet();
+            container.SortSubsets();
+            var subset = container.FindBestSubset();
+
+            Assert.AreEqual(100, subset.TotalArea);
+        }
     }
 }

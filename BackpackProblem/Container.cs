@@ -40,7 +40,7 @@ namespace BackpackProblem
 
         public void AddSubset(Subset subset)
         {
-            if (subset.TotalArea < Area)
+            if (subset.TotalArea <= Area)
                 Subsets.Add(subset);
         }
 
@@ -121,12 +121,20 @@ namespace BackpackProblem
                 : container.GetPlacesForItems(new Item(item.Height, item.Width, item.Value)).ToArray();
 
 
-            if (!places.Any() && !placesWhenDimensionsSwapped.Any()) return false;
+            if (!places.Any() && !placesWhenDimensionsSwapped.Any())
+            {
+#if DEBUG
+                Console.WriteLine($"Can't fit item: {item}");
+#endif
+                return false;
+            }
 
             if (!items.Any())
             {
                 var place = places.Any() ? places.First() : placesWhenDimensionsSwapped.First();
-                Console.WriteLine(item + ": " + place);
+#if DEBUG
+                Console.WriteLine(item + ": " + place); 
+#endif
                 item.UpperLeftCornerPoint = place;
                 return true;
             };
@@ -137,7 +145,9 @@ namespace BackpackProblem
                 newContainer.Update(item, place);
                 if (CanFit(new Stack<Item>(items), newContainer))
                 {
-                    Console.WriteLine(item + ": " + place);
+#if DEBUG
+                    Console.WriteLine(item + ": " + place); 
+#endif
                     item.UpperLeftCornerPoint = place;
                     return true;
                 }
@@ -152,7 +162,9 @@ namespace BackpackProblem
                     newContainer.Update(item, place);
                     if (CanFit(new Stack<Item>(items), newContainer))
                     {
-                        Console.WriteLine(item + ": " + place);
+#if DEBUG
+                        Console.WriteLine(item + ": " + place+" (swapped)"); 
+#endif
                         item.UpperLeftCornerPoint = place;
                         return true;
                     }
@@ -165,6 +177,9 @@ namespace BackpackProblem
 
         public void Update(Item item, Point point)
         {
+#if DEBUG
+            Console.WriteLine($"Update item: {item} at {point}");
+#endif
             for (int i = 0; i < item.Width; i++)
             {
                 for (int j = 0; j < item.Height; j++)
