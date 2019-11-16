@@ -11,7 +11,7 @@ namespace BackpackProblem.WebApi.Validators
             RuleFor(r => r.ContainerWidth).GreaterThan(0);
             RuleFor(r => r.MaxItemHeight).GreaterThan(0);
             RuleFor(r => r.MaxItemWidth).GreaterThan(0);
-            RuleFor(r => r.NumberOfItems).GreaterThan(0).LessThanOrEqualTo(20);
+            RuleFor(r => r.NumberOfItems).GreaterThan(0).LessThanOrEqualTo(24);
         }
     }
 }
