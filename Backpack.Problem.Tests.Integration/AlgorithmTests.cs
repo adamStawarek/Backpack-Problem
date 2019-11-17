@@ -8,12 +8,6 @@ namespace Backpack.Problem.Tests.Integration
     public class AlgorithmTests
     {
         [Test]
-        public void TestNotPassing()
-        {
-            Assert.IsTrue(false);
-        }
-
-        [Test]
         public void MicroDataSet()
         {
             var container = ContainerFactory.ReadFromFile("data-3.csv");
