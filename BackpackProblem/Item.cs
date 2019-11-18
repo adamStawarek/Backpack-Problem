@@ -20,7 +20,7 @@ namespace BackpackProblem
 
         public Item Clone()
         {
-            return new Item(Width,Height,Value)
+            return new Item(Width, Height, Value)
             {
                 DimensionsSwapped = DimensionsSwapped,
                 UpperLeftCornerPoint = UpperLeftCornerPoint

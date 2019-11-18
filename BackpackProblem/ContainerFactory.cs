@@ -14,7 +14,7 @@ namespace BackpackProblem
                 int currentLine = 0;
                 while (!reader.EndOfStream)
                 {
-                    string line = reader.ReadLine();
+                    string line = reader.ReadLine()?.TrimStart();
                     string[] values = line?.Split(separator);
 
                     currentLine++;

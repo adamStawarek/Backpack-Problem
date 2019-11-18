@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BackpackProblem
@@ -41,8 +40,22 @@ namespace BackpackProblem
 
         public void AddSubset(Subset subset)
         {
-            if (subset.TotalArea <= Area)
+            if (subset.TotalArea > Area) return;
+
+            var duplicate = Subsets.FirstOrDefault(s =>
+                s.Items.SequenceEqual(subset.Items, new ItemDimensionalComparer()));
+
+            if (duplicate != null)
+            {
+                if (duplicate.TotalValue >= subset.TotalValue) return;
+
+                Subsets.Remove(duplicate);
                 Subsets.Add(subset);
+            }
+            else
+            {
+                Subsets.Add(subset);
+            }
         }
 
         public void SortSubsets()
@@ -108,7 +121,7 @@ namespace BackpackProblem
 
         public (bool canFit, IEnumerable<Item> items) CheckIfSubsetFits(Subset subset)
         {
-            return (CanFit(new Stack<Item>(subset.Items.Select(i=>i.Clone())), this, out List<Item> changedItems), changedItems);
+            return (CanFit(new Stack<Item>(subset.Items.Select(i => i.Clone())), this, out List<Item> changedItems), changedItems);
         }
 
         public bool CheckIfItemFits(Item item, Point point)
@@ -152,7 +165,7 @@ namespace BackpackProblem
                 Console.WriteLine(item + ": " + place + (places.Any() ? "" : " (swapped)"));
 #endif
                 item.UpperLeftCornerPoint = place;
-                changedItems = new List<Item>{ item };
+                changedItems = new List<Item> { item };
                 return true;
             };
 
@@ -160,7 +173,7 @@ namespace BackpackProblem
             {
                 var newContainer = container.Clone();
                 newContainer.Update(item, place);
-                if (newContainer.CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
+                if (newContainer.CanFit(new Stack<Item>(items.Select(i => i.Clone())), newContainer, out changedItems))
                 {
 #if DEBUG
                     Console.WriteLine(item + ": " + place);
@@ -178,7 +191,7 @@ namespace BackpackProblem
                 {
                     var newContainer = container.Clone();
                     newContainer.Update(item, place);
-                    if (newContainer.CanFit(new Stack<Item>(items.Select(i=>i.Clone())), newContainer, out changedItems))
+                    if (newContainer.CanFit(new Stack<Item>(items.Select(i => i.Clone())), newContainer, out changedItems))
                     {
 #if DEBUG
                         Console.WriteLine(item + ": " + place + " (swapped)");

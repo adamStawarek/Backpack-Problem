@@ -1,4 +1,3 @@
-using FizzWare.NBuilder;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -38,22 +37,49 @@ namespace BackpackProblem.Tests.Unit
             Assert.AreEqual(previousItemsCount, _container.Items.Count);
         }
 
-        [TestCase(3)]
-        [TestCase(2)]
-        [TestCase(1)]
-        public void Given_N_Items_GeneratePowerSets_Returns_2_To_N_Power_Subsets(int itemsCount)
+        [Test]
+        public void Given_3_Items_With_Different_Dimensions_GeneratePowerSets_Returns_8_Power_Subsets()
         {
-            var items = Builder<Item>.CreateListOfSize(itemsCount)
-                .All().WithFactory(() => new Item(1, 1, 1))
-                .Build();
+            var items = new Item[]
+            {
+                new Item(1,1,1),
+                new Item(1,2,1),
+                new Item(1,3,1),
+            };
             _container.AddItems(items);
 
             _container.GeneratePowerSet();
 
             Assert.Multiple(() =>
             {
-                Assert.AreEqual(itemsCount, _container.Items.Count);
-                Assert.AreEqual((int)Math.Pow(2, itemsCount), _container.Subsets.Count);
+                Assert.AreEqual(3, _container.Items.Count);
+                Assert.AreEqual((int)Math.Pow(2, 3), _container.Subsets.Count);
+            });
+        }
+
+        [Test]
+        public void Given_3_Items__Which_2_Have_Duplicate_Dimensions_GeneratePowerSets_Returns_6_Power_Subsets()
+        {
+            var items = new Item[]
+            {
+                new Item(1,1,1),
+                new Item(1,2,1),
+                new Item(2,1,2),
+            };
+            _container.AddItems(items);
+            _container.SortSubsets();
+            _container.GeneratePowerSet();
+
+            //(1 1)(1 2)(2 1)
+            //(1 1)(2 1)
+            //(2 1)(1 2)
+            //(1 1)
+            //(2 1)
+            //[]
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(3, _container.Items.Count);
+                Assert.AreEqual(6, _container.Subsets.Count);
             });
         }
 
@@ -65,7 +91,7 @@ namespace BackpackProblem.Tests.Unit
             subset1.Items.Add(new Item(1, 1, 6));
 
             var subset2 = new Subset();
-            subset2.Items.Add(new Item(1, 1, 2));
+            subset2.Items.Add(new Item(1, 6, 2));
 
             var subset3 = new Subset();
             subset3.Items.Add(new Item(1, 1, 24));
