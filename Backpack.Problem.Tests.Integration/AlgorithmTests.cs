@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
 using BackpackProblem;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Backpack.Problem.Tests.Integration
 {

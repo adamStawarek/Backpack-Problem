@@ -28,7 +28,8 @@ namespace BackpackProblem.WebApi
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             }));
 
             services.AddMvc()

@@ -11,6 +11,7 @@ namespace BackpackProblem
         public int Width { get; }
         public int Height { get; }
         public List<Item> Items { get; }
+        public List<Item> AllItems { get; set; }
         public List<Subset> Subsets { get; set; }
         public int Area => Width * Height;
         public int[,] Fields { get; set; }
@@ -20,12 +21,14 @@ namespace BackpackProblem
             Width = width;
             Height = height;
             Items = new List<Item>();
+            AllItems = new List<Item>();
             Subsets = new List<Subset>();
             Fields = new int[height, width];
         }
 
         public void AddItem(Item item)
         {
+            AllItems.Add(item);
             if ((item.Height <= Height && item.Width <= Width) || (item.Height <= Width && item.Width <= Height))
                 Items.Add(item);
         }

@@ -18,6 +18,21 @@ namespace BackpackProblem.WebApi.Controllers
         private readonly string _dataSetDirectory = Directory.GetCurrentDirectory() + "/DataSets";
 
         [HttpGet]
+        public JsonResult GetAllDataSetItems([FromQuery]GetFromFileModel model)
+        {
+            var container = ContainerFactory.ReadFromFile($"{_dataSetDirectory}/{model.DataSet}");
+            return new JsonResult(new
+            {
+                Items = container.AllItems.Select(s => new
+                {
+                    s.Width,
+                    s.Height,
+                    s.Value
+                })
+            });
+        }
+
+        [HttpGet]
         public JsonResult GetFromDataSet([FromQuery]GetFromFileModel model)
         {
             var container = ContainerFactory.ReadFromFile($"{_dataSetDirectory}/{model.DataSet}");
@@ -34,7 +49,7 @@ namespace BackpackProblem.WebApi.Controllers
 
             return new JsonResult(new
             {
-                Items = container.Items.Select(s => new
+                Items = container.AllItems.Select(s => new
                 {
                     s.Width,
                     s.Height,
@@ -79,12 +94,12 @@ namespace BackpackProblem.WebApi.Controllers
 
             if (model.SaveItems)
             {
-                this.SaveItemsToFile(container.Width, container.Height, container.Items);
+                this.SaveItemsToFile(container.Width, container.Height, container.AllItems);
             }
 
             return new JsonResult(new
             {
-                Items = container.Items.Select(s => new
+                Items = container.AllItems.Select(s => new
                 {
                     s.Width,
                     s.Height,
@@ -107,6 +122,16 @@ namespace BackpackProblem.WebApi.Controllers
         }
 
         [HttpPost]
+        public JsonResult ShuffleAndSaveDataSet(ShuffleAndSaveDataSetModel model)
+        {
+            var container = ContainerFactory.ReadFromFile($"{_dataSetDirectory}/{model.DataSet}");
+            container.AllItems = container.AllItems.OrderBy(i => Guid.NewGuid()).ToList();
+            var fileName = $"afterShuffle_{DateTime.Now.ToString("s").Replace(":", "-")}_{model.DataSet}";
+            this.SaveItemsToFile(container.Width, container.Height, container.Items, fileName);
+            return new JsonResult(fileName);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> UploadDataSet(IFormFile file)
         {
             using (var fileStream = new FileStream(Path.Combine(_dataSetDirectory, file.FileName),
@@ -123,10 +148,12 @@ namespace BackpackProblem.WebApi.Controllers
             return Directory.GetFiles(_dataSetDirectory).Select(f => f.Split(@"\").Last());
         }
 
-        private void SaveItemsToFile(int containerWidth, int containerHeight, List<Item> containerItems)
+        private void SaveItemsToFile(int containerWidth, int containerHeight, List<Item> containerItems, string fileName = null)
         {
             Directory.CreateDirectory("Datasets");
-            using (var file = new StreamWriter($"{_dataSetDirectory}/backpack_{DateTime.Now.ToString("s").Replace(":", "-")}_{containerWidth}-{containerHeight}-{containerItems.Count}.txt"))
+            fileName = fileName ??
+                $"backpack_{DateTime.Now.ToString("s").Replace(":", "-")}_{containerWidth}-{containerHeight}-{containerItems.Count}.txt";
+            using (var file = new StreamWriter($"{_dataSetDirectory}/{fileName}"))
             {
                 file.WriteLine($"{containerWidth} {containerHeight}");
                 file.WriteLine(containerItems.Count.ToString());
