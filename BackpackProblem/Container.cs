@@ -10,11 +10,11 @@ namespace BackpackProblem
     {
         public int Width { get; }
         public int Height { get; }
-        public List<Item> Items { get; }
-        public List<Item> AllItems { get; set; }
-        public List<Subset> Subsets { get; set; }
+        public List<Subset> Subsets { get; }
+        public List<Item> Items { get; private set; }
+        public List<Item> AllItems { get; private set; }
+        public int[,] Fields { get; private set; }
         public int Area => Width * Height;
-        public int[,] Fields { get; set; }
 
         public Container(int width, int height)
         {
@@ -146,10 +146,10 @@ namespace BackpackProblem
         public bool CanFit(Stack<Item> items, Container container, out List<Item> changedItems)
         {
             var item = items.Pop();
-            var places = container.GetPlacesForItems(item).ToArray();
+            var places = container.GetPlacesForItem(item).ToArray();
             var placesWhenDimensionsSwapped = item.Width.Equals(item.Height)
                 ? Array.Empty<Point>()
-                : container.GetPlacesForItems(new Item(item.Height, item.Width, item.Value)).ToArray();
+                : container.GetPlacesForItem(new Item(item.Height, item.Width, item.Value)).ToArray();
 
 
             if (!places.Any() && !placesWhenDimensionsSwapped.Any())
@@ -225,6 +225,21 @@ namespace BackpackProblem
             }
         }
 
+        public void Shuffle()
+        {
+            var oldAllItems =new List<Item>(this.AllItems);
+            while (oldAllItems.SequenceEqual(this.AllItems))
+            {
+                this.AllItems.Sort(((i1, i2) => Guid.NewGuid().CompareTo(Guid.NewGuid())));
+            }
+
+            var oldItems = new List<Item>(this.Items);
+            while (oldItems.SequenceEqual(this.Items))
+            {
+                this.Items.Sort(((i1, i2) => Guid.NewGuid().CompareTo(Guid.NewGuid())));
+            }
+        }
+
         public Container Clone()
         {
             var newContainer = new Container(this.Width, this.Height)
@@ -234,7 +249,18 @@ namespace BackpackProblem
             return newContainer;
         }
 
-        public IEnumerable<Point> GetPlacesForItems(Item item)
+        public Container CloneWithItems()
+        {
+            var newContainer = new Container(this.Width, this.Height)
+            {
+                Fields = this.Fields.Clone() as int[,],
+                AllItems = this.AllItems.Select(i=>i.Clone()).ToList(),
+                Items = this.Items.Select(i => i.Clone()).ToList()
+            };
+            return newContainer;
+        }
+
+        public IEnumerable<Point> GetPlacesForItem(Item item)
         {
             var upperLeftCorners = new List<Point>();
             for (int i = 0; i <= Width - item.Width; i++)

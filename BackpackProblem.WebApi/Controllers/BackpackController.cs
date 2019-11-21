@@ -125,9 +125,19 @@ namespace BackpackProblem.WebApi.Controllers
         public JsonResult ShuffleAndSaveDataSet(ShuffleAndSaveDataSetModel model)
         {
             var container = ContainerFactory.ReadFromFile($"{_dataSetDirectory}/{model.DataSet}");
-            container.AllItems = container.AllItems.OrderBy(i => Guid.NewGuid()).ToList();
-            var fileName = $"afterShuffle_{DateTime.Now.ToString("s").Replace(":", "-")}_{model.DataSet}";
-            this.SaveItemsToFile(container.Width, container.Height, container.Items, fileName);
+            container.Shuffle();
+
+            var shuffleFiles = Directory
+                .GetFiles(_dataSetDirectory, $"shuffle*-{model.DataSet}")
+                .Select(f=>f.Split("\\").Last())
+                .ToArray();
+
+            var maxShuffle = shuffleFiles.Any() ?
+                shuffleFiles.Select(f => int.Parse(f.ElementAt(7).ToString()))
+                .Max() : 0;
+
+            var fileName = $"shuffle{maxShuffle + 1}-{model.DataSet}";
+            this.SaveItemsToFile(container.Width, container.Height, container.AllItems, fileName);
             return new JsonResult(fileName);
         }
 
@@ -150,7 +160,6 @@ namespace BackpackProblem.WebApi.Controllers
 
         private void SaveItemsToFile(int containerWidth, int containerHeight, List<Item> containerItems, string fileName = null)
         {
-            Directory.CreateDirectory("Datasets");
             fileName = fileName ??
                 $"backpack_{DateTime.Now.ToString("s").Replace(":", "-")}_{containerWidth}-{containerHeight}-{containerItems.Count}.txt";
             using (var file = new StreamWriter($"{_dataSetDirectory}/{fileName}"))

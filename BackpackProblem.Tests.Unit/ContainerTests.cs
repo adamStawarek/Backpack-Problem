@@ -200,7 +200,7 @@ namespace BackpackProblem.Tests.Unit
             tmpContainer.Update(item1, new Point(2, 1));
 
             var item2 = new Item(2, 2, 1);
-            var places = tmpContainer.GetPlacesForItems(item2);
+            var places = tmpContainer.GetPlacesForItem(item2);
 
             var expected = new List<Point>()
             {
@@ -271,6 +271,24 @@ namespace BackpackProblem.Tests.Unit
                 Assert.IsTrue(canFit);
                 Assert.IsTrue(changedItems.Single(r => r.Height == 4).DimensionsSwapped);
             });
+        }
+
+        [Test]
+        [Repeat(500)]
+        public void Shuffle_Change_Only_Order_Of_Items()
+        {
+            var container = new ContainerBuilder()
+                .WithItemMaxValue(100)
+                .WithContainerDimensions(10,10)
+                .WithItems(10)
+                .WithItemMaxDimensions(10,10)
+                .Build();
+            var oldItems = new List<Item>(container.AllItems);
+
+            container.Shuffle(); 
+
+            CollectionAssert.AreNotEqual(oldItems, container.AllItems);
+            CollectionAssert.AreEquivalent(oldItems, container.AllItems);
         }
     }
 }

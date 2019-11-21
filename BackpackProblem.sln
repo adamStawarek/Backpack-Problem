@@ -1,20 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2041
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackpackProblem", "BackpackProblem\BackpackProblem.csproj", "{BA5EF736-DEA7-4C52-A8D3-C4B85399269C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackpackProblem.Tests.Unit", "BackpackProblem.Tests.Unit\BackpackProblem.Tests.Unit.csproj", "{27E64724-1C45-401D-8AF6-1E2050933827}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Backpack.Problem.Tests.Integration", "Backpack.Problem.Tests.Integration\Backpack.Problem.Tests.Integration.csproj", "{A3B09601-BA68-4320-8C66-8D4490E48DEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackpackProblem.Tests.Integration", "BackpackProblem.Tests.Integration\BackpackProblem.Tests.Integration.csproj", "{A3B09601-BA68-4320-8C66-8D4490E48DEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackpackProblem.WebApi", "BackpackProblem.WebApi\BackpackProblem.WebApi.csproj", "{5EBE3534-EF80-4774-BCC2-45A5FCC51754}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackpackProblem.WebApi", "BackpackProblem.WebApi\BackpackProblem.WebApi.csproj", "{5EBE3534-EF80-4774-BCC2-45A5FCC51754}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB638A27-F3E8-421C-BA90-B001FC5FC326}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackpackProblem.StatisticsCollector", "BackpackProblem.StatisticsCollector\BackpackProblem.StatisticsCollector.csproj", "{123D2C74-878B-460C-AB36-2F87938D6CA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{5EBE3534-EF80-4774-BCC2-45A5FCC51754}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EBE3534-EF80-4774-BCC2-45A5FCC51754}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EBE3534-EF80-4774-BCC2-45A5FCC51754}.Release|Any CPU.Build.0 = Release|Any CPU
+		{123D2C74-878B-460C-AB36-2F87938D6CA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{123D2C74-878B-460C-AB36-2F87938D6CA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{123D2C74-878B-460C-AB36-2F87938D6CA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{123D2C74-878B-460C-AB36-2F87938D6CA9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
