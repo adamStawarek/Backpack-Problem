@@ -14,7 +14,7 @@ namespace BackpackProblem.StatisticsCollector
             try
             {
                 CollectStatistics(10, 10, 10, 10,
-                        10, 8, 100, 3000, true);
+                        10, 8, 10, 10000, false);
             }
             catch
             {
@@ -27,7 +27,7 @@ namespace BackpackProblem.StatisticsCollector
             try
             {
                 CollectStatistics(10, 10, 10, 10,
-                    10, 16, 100, 5000, true);
+                    10, 16, 100, 10000, false);
             }
             catch
             {
@@ -40,7 +40,7 @@ namespace BackpackProblem.StatisticsCollector
             try
             {
                 CollectStatistics(10, 10, 3, 3,
-                    3, 8, 100, 3000, true);
+                    3, 8, 100, 10000, false);
             }
             catch
             {
@@ -53,7 +53,7 @@ namespace BackpackProblem.StatisticsCollector
             try
             {
                 CollectStatistics(10, 10, 3, 3,
-                    3, 20, 100, 5000, true);
+                    3, 20, 100, 10000, false);
             }
             catch
             {
@@ -98,7 +98,7 @@ namespace BackpackProblem.StatisticsCollector
                 long elapsedMs = watch.ElapsedMilliseconds;
                 sb.Append(
                     isCompletedSuccessfully
-                        ? $"[{task.Result?.Items.Count} {task.Result?.TotalValue} {task.Result?.TotalArea} {elapsedMs}]"
+                        ? $"[{task.Result?.Items.Count} {task.Result?.TotalValue} {task.Result?.TotalArea} {container.Counter} {elapsedMs}]"
                         : "[Timeout]");
 
 

@@ -15,6 +15,7 @@ namespace BackpackProblem
         public List<Item> AllItems { get; private set; }
         public int[,] Fields { get; private set; }
         public int Area => Width * Height;
+        public int Counter { get; set; }
 
         public Container(int width, int height)
         {
@@ -24,10 +25,12 @@ namespace BackpackProblem
             AllItems = new List<Item>();
             Subsets = new List<Subset>();
             Fields = new int[height, width];
+            Counter = 0;
         }
 
         public void AddItem(Item item)
         {
+            Counter++;
             AllItems.Add(item);
             if ((item.Height <= Height && item.Width <= Width) || (item.Height <= Width && item.Width <= Height))
                 Items.Add(item);
@@ -65,9 +68,16 @@ namespace BackpackProblem
         {
             Subsets.Sort(delegate (Subset A, Subset B)
             {
+                Counter++;
                 if (A.TotalValue == B.TotalValue)
                 {
-                    return 0;
+                    if (A.TotalArea == B.TotalArea)
+                        return 0;
+                    
+                    if (A.TotalArea > B.TotalArea)
+                        return 1;
+                    
+                    return -1;
                 }
 
                 if (A.TotalValue > B.TotalValue)
@@ -83,6 +93,7 @@ namespace BackpackProblem
         {
             foreach (var subset in Subsets)
             {
+                Counter++;
                 var result = CheckIfSubsetFits(subset);
                 if (result.canFit)
                 {
@@ -145,6 +156,7 @@ namespace BackpackProblem
 
         public bool CanFit(Stack<Item> items, Container container, out List<Item> changedItems)
         {
+            Counter++;
             var item = items.Pop();
             var places = container.GetPlacesForItem(item).ToArray();
             var placesWhenDimensionsSwapped = item.Width.Equals(item.Height)
@@ -227,7 +239,7 @@ namespace BackpackProblem
 
         public void Shuffle()
         {
-            var oldAllItems =new List<Item>(this.AllItems);
+            var oldAllItems = new List<Item>(this.AllItems);
             while (oldAllItems.SequenceEqual(this.AllItems))
             {
                 this.AllItems.Sort(((i1, i2) => Guid.NewGuid().CompareTo(Guid.NewGuid())));
@@ -254,7 +266,7 @@ namespace BackpackProblem
             var newContainer = new Container(this.Width, this.Height)
             {
                 Fields = this.Fields.Clone() as int[,],
-                AllItems = this.AllItems.Select(i=>i.Clone()).ToList(),
+                AllItems = this.AllItems.Select(i => i.Clone()).ToList(),
                 Items = this.Items.Select(i => i.Clone()).ToList()
             };
             return newContainer;
@@ -285,6 +297,7 @@ namespace BackpackProblem
                 int m = 1; // m is used to check set bit in binary representation.
                 for (int j = 0; j < n; j++)
                 {
+                    Counter++;
                     if ((i & m) > 0)
                     {
                         subset.Items.Add(Items[j]);
