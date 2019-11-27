@@ -166,7 +166,7 @@ namespace BackpackProblem.WebApi.Controllers
             {
                 file.WriteLine($"{containerWidth} {containerHeight}");
                 file.WriteLine(containerItems.Count.ToString());
-                containerItems.ForEach(item => file.WriteLine($"{item.Width} {item.Height} {item.Height}"));
+                containerItems.ForEach(item => file.WriteLine($"{item.Width} {item.Height} {item.Value}"));
             }
         }
 
