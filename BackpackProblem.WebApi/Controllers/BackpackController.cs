@@ -25,6 +25,7 @@ namespace BackpackProblem.WebApi.Controllers
             {
                 Items = container.AllItems.Select(s => new
                 {
+                    s.Id,
                     s.Width,
                     s.Height,
                     s.Value
