@@ -4,17 +4,23 @@ namespace BackpackProblem
 {
     public class ContainerBuilder
     {
+        private readonly Random _random;
         private int _containerWidth;
         private int _containerHeight;
         private int _maxItemWidth;
         private int _maxItemHeight;
         private int _maxItemValue;
         private int _itemsCount;
-        private readonly Random _random;
+        private int _minItemHeight;
+        private int _minItemWidth;
+        private int _minItemValue;
 
         public ContainerBuilder()
         {
             _random = new Random();
+            _minItemWidth = 1;
+            _maxItemHeight = 1;
+            _minItemValue = 1;
         }
 
         public ContainerBuilder WithContainerDimensions(int width, int height)
@@ -31,9 +37,22 @@ namespace BackpackProblem
             return this;
         }
 
+        public ContainerBuilder WithItemMinDimensions(int minWidth, int minHeight)
+        {
+            _minItemHeight = minHeight;
+            _minItemWidth = minWidth;
+            return this;
+        }
+
         public ContainerBuilder WithItemMaxValue(int maxValue)
         {
             _maxItemValue = maxValue;
+            return this;
+        }
+
+        public ContainerBuilder WithItemMinValue(int minValue)
+        {
+            _minItemValue = minValue;
             return this;
         }
 
@@ -48,10 +67,10 @@ namespace BackpackProblem
             var container = new Container(_containerWidth, _containerHeight);
             for (int i = 0; i < _itemsCount; i++)
             {
-                int itemWidth = _random.Next(1, _maxItemWidth);
-                int itemHeight = _random.Next(1, _maxItemHeight);
-                int itemValue = _random.Next(1, _maxItemValue);
-                container.AddItem(new Item(itemWidth, itemHeight, itemValue));
+                int itemWidth = _random.Next(_minItemWidth, _maxItemWidth);
+                int itemHeight = _random.Next(_maxItemHeight, _maxItemHeight);
+                int itemValue = _random.Next(_minItemValue, _maxItemValue);
+                container.AddItem(new Item(itemWidth, itemHeight, itemValue, i));
             }
 
             return container;

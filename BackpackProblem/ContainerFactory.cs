@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace BackpackProblem
 {
@@ -34,7 +35,8 @@ namespace BackpackProblem
                         int width = Convert.ToInt32(values?[0]);
                         int height = Convert.ToInt32(values?[1]);
                         int value = Convert.ToInt32(values?[2]);
-                        container?.AddItem(new Item(width, height, value));
+                        var id = container.AllItems.Count + 1;
+                        container?.AddItem(new Item(width, height, value, id));
                     }
                 }
                 return container;

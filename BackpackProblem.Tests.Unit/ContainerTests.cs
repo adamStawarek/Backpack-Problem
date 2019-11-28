@@ -279,13 +279,13 @@ namespace BackpackProblem.Tests.Unit
         {
             var container = new ContainerBuilder()
                 .WithItemMaxValue(100)
-                .WithContainerDimensions(10,10)
+                .WithContainerDimensions(10, 10)
                 .WithItems(10)
-                .WithItemMaxDimensions(10,10)
+                .WithItemMaxDimensions(10, 10)
                 .Build();
             var oldItems = new List<Item>(container.AllItems);
 
-            container.Shuffle(); 
+            container.Shuffle();
 
             CollectionAssert.AreNotEqual(oldItems, container.AllItems);
             CollectionAssert.AreEquivalent(oldItems, container.AllItems);

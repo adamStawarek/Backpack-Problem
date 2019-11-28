@@ -41,8 +41,7 @@ namespace BackpackProblem.WebApi.Controllers
 
             container.GeneratePowerSet();
             container.SortSubsets();
-            var subset = /*model.ExecuteAsync ? await container.FindBestSubsetAsync() :*/
-                container.FindBestSubset();
+            var subset = container.FindBestSubset();
 
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;
@@ -51,6 +50,7 @@ namespace BackpackProblem.WebApi.Controllers
             {
                 Items = container.AllItems.Select(s => new
                 {
+                    s.Id,
                     s.Width,
                     s.Height,
                     s.Value
@@ -59,6 +59,7 @@ namespace BackpackProblem.WebApi.Controllers
                 ContainerHeight = container.Height,
                 SelectedSubset = subset.Items.Select(s => new
                 {
+                    s.Id,
                     s.Width,
                     s.Height,
                     s.Value,
@@ -86,8 +87,7 @@ namespace BackpackProblem.WebApi.Controllers
 
             container.GeneratePowerSet();
             container.SortSubsets();
-            var subset = /*model.ExecuteAsync ? await container.FindBestSubsetAsync() :*/
-                container.FindBestSubset();
+            var subset = container.FindBestSubset();
 
             watch.Stop();
             long elapsedMs = watch.ElapsedMilliseconds;
@@ -101,6 +101,7 @@ namespace BackpackProblem.WebApi.Controllers
             {
                 Items = container.AllItems.Select(s => new
                 {
+                    s.Id,
                     s.Width,
                     s.Height,
                     s.Value
@@ -109,6 +110,7 @@ namespace BackpackProblem.WebApi.Controllers
                 ContainerHeight = container.Height,
                 SelectedSubset = subset.Items.Select(s => new
                 {
+                    s.Id,
                     s.Width,
                     s.Height,
                     s.Value,
@@ -129,7 +131,7 @@ namespace BackpackProblem.WebApi.Controllers
 
             var shuffleFiles = Directory
                 .GetFiles(_dataSetDirectory, $"shuffle*-{model.DataSet}")
-                .Select(f=>f.Split("\\").Last())
+                .Select(f => f.Split("\\").Last())
                 .ToArray();
 
             var maxShuffle = shuffleFiles.Any() ?

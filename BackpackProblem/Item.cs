@@ -4,6 +4,7 @@ namespace BackpackProblem
 {
     public class Item
     {
+        public int Id { get; }
         public int Width { get; private set; }
         public int Height { get; private set; }
         public int Value { get; }
@@ -16,11 +17,20 @@ namespace BackpackProblem
             Width = width;
             Height = height;
             Value = value;
+            Id = -1;
+        }
+
+        public Item(int width, int height, int value, int id)
+        {
+            Width = width;
+            Height = height;
+            Value = value;
+            Id = id;
         }
 
         public Item Clone()
         {
-            return new Item(Width, Height, Value)
+            return new Item(Width, Height, Value, Id)
             {
                 DimensionsSwapped = DimensionsSwapped,
                 UpperLeftCornerPoint = UpperLeftCornerPoint

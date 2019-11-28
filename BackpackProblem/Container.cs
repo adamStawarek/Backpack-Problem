@@ -73,10 +73,10 @@ namespace BackpackProblem
                 {
                     if (A.TotalArea == B.TotalArea)
                         return 0;
-                    
+
                     if (A.TotalArea > B.TotalArea)
                         return 1;
-                    
+
                     return -1;
                 }
 
