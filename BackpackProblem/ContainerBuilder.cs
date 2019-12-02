@@ -14,6 +14,8 @@ namespace BackpackProblem
         private int _minItemHeight;
         private int _minItemWidth;
         private int _minItemValue;
+        private bool _withSquares;
+
 
         public ContainerBuilder()
         {
@@ -56,6 +58,12 @@ namespace BackpackProblem
             return this;
         }
 
+        public ContainerBuilder WithOnlySquares()
+        {
+            _withSquares = true;
+            return this;
+        }
+
         public ContainerBuilder WithItems(int numberOfItems)
         {
             _itemsCount = numberOfItems;
@@ -67,8 +75,16 @@ namespace BackpackProblem
             var container = new Container(_containerWidth, _containerHeight);
             for (int i = 0; i < _itemsCount; i++)
             {
-                int itemWidth = _random.Next(_minItemWidth, _maxItemWidth);
-                int itemHeight = _random.Next(_maxItemHeight, _maxItemHeight);
+                int itemWidth, itemHeight;
+                if (_withSquares)
+                {
+                    itemHeight = itemWidth = _random.Next(_minItemWidth, _maxItemWidth);
+                }
+                else
+                {
+                    itemWidth = _random.Next(_minItemWidth, _maxItemWidth);
+                    itemHeight = _random.Next(_minItemHeight, _maxItemHeight);
+                }
                 int itemValue = _random.Next(_minItemValue, _maxItemValue);
                 container.AddItem(new Item(itemWidth, itemHeight, itemValue, i));
             }
