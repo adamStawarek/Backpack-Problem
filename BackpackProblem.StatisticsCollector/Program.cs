@@ -11,7 +11,7 @@ namespace BackpackProblem.StatisticsCollector
     {
         private static readonly string ResultsDirectory = Directory.GetCurrentDirectory() + "/Results";
 
-        static void Main()
+        static async Task Main()
         {
             var configurations = new List<(int containerWidth, int containerHeight, int minItemWidth, int maxItemWidth,
                 int minItemHeight, int maxItemHeight, int minItemValue, int maxItemValue, int itemCount, bool onlySquares)>
@@ -21,54 +21,49 @@ namespace BackpackProblem.StatisticsCollector
                 (20,20,5,9,5,9,1,3,10, false),
                 (20,20,5,9,5,9,1,3,15, false),
                 (20,20,5,9,5,9,1,3,20, false),
-                (20,20,5,9,5,9,1,3,25, false),
 
                //large value/small area, large cointainer
                (20,20,1,5,1,5,50,100,5, false),
                (20,20,1,5,1,5,50,100,10, false),
                (20,20,1,5,1,5,50,100,15, false),
-               (20,20,1,5,1,5,50,100,20, false),
-               (20,20,1,5,1,5,50,100,25, false),
+               //(20,20,1,5,1,5,50,100,20, false),
 
                //small value/large area, small cointainer
                (10,10,5,9,5,9,1,3,5, false),
                (10,10,5,9,5,9,1,3,10, false),
                (10,10,5,9,5,9,1,3,15, false),
-               (10,10,5,9,5,9,1,3,20, false),
-               (10,10,5,9,5,9,1,3,25, false),
+               //(10,10,5,9,5,9,1,3,20, false),
 
                //large value/small area, small cointainer
                (10,10,1,5,1,5,50,100,5, false),
                (10,10,1,5,1,5,50,100,10, false),
                (10,10,1,5,1,5,50,100,15, false),
-               (10,10,1,5,1,5,50,100,20, false),
-               (10,10,1,5,1,5,50,100,25, false),
+               //(10,10,1,5,1,5,50,100,20, false),
 
                //sqares
                (10,10,1,10,-1,-1,1,10,5, true),
                (10,10,1,10,-1,-1,1,10,10, true),
                (10,10,1,10,-1,-1,1,10,15, true),
-               (10,10,1,10,-1,-1,1,10,20, true),
-               (10,10,1,10,-1,-1,1,10,25, true),
+               //(10,10,1,10,-1,-1,1,10,20, true),
 
                //sqares
                (20,20,1,10,-1,-1,1,10,5, true),
                (20,20,1,10,-1,-1,1,10,10, true),
                (20,20,1,10,-1,-1,1,10,15, true),
-               (20,20,1,10,-1,-1,1,10,20, true),
-               (20,20,1,10,-1,-1,1,10,25, true),
+               //(20,20,1,10,-1,-1,1,10,20, true),
             };
 
             foreach (var config in configurations)
             {
                 try
                 {
-                    CollectStatistics(config.containerWidth, config.containerHeight,
+                    await CollectStatistics(config.containerWidth, config.containerHeight,
                         config.minItemWidth, config.minItemHeight,
                         config.minItemValue, config.maxItemWidth,
                         config.maxItemHeight, config.maxItemValue,
-                        config.itemCount, 3,
-                        1000, config.onlySquares);
+                        config.itemCount, 1,
+                        30*60*1000, config.onlySquares,
+                        configurations.IndexOf(config));
                 }
                 catch
                 {
@@ -80,13 +75,19 @@ namespace BackpackProblem.StatisticsCollector
             }
         }
 
-        public static void CollectStatistics(int containerWidth, int containerHeight,
+        public static async Task CollectStatistics(int containerWidth, int containerHeight,
             int minItemWidth, int minItemHeight, int minItemValue,
             int maxItemWidth, int maxItemHeight, int maxItemValue,
-            int itemCount, int iterationCount, int timeout, bool onlySquares)
+            int itemCount, int iterationCount, int timeout, bool onlySquares,
+            int index)
         {
             var sb = new StringBuilder();
-            sb.AppendLine("containerArea itemsCount resultItemsCount resultTotalValue averageItemAreaToContainerAreaRatio averageOfItemValueToItemAreaRatio operations time");
+            sb.AppendLine($"{index} | " +
+                          $"{containerWidth} {containerHeight} " +
+                          $"{minItemWidth} {maxItemWidth} " +
+                          $"{minItemHeight} {maxItemHeight} " +
+                          $"{minItemValue} {maxItemValue} " +
+                          $"{itemCount} {onlySquares}");
 
             sb.AppendLine();
 
@@ -126,10 +127,10 @@ namespace BackpackProblem.StatisticsCollector
                           $"{elapsedMs}"
                         : "[Timeout]");
 
-
-               
                 sb.AppendLine();
             }
+
+            await Task.Delay(1000);
 
             Directory.CreateDirectory(ResultsDirectory);
             using (var file = new StreamWriter($"{ResultsDirectory}/" +
