@@ -17,40 +17,52 @@ namespace BackpackProblem.StatisticsCollector
                 int minItemHeight, int maxItemHeight, int minItemValue, int maxItemValue, int itemCount, bool onlySquares)>
             {
                 //small value/large area , large cointainer
-                (20,20,5,9,5,9,1,3,5, false),
+                (20,20,5,9,5,9,1,3,6, false),
+                (20,20,5,9,5,9,1,3,8, false),
                 (20,20,5,9,5,9,1,3,10, false),
-                (20,20,5,9,5,9,1,3,15, false),
-                (20,20,5,9,5,9,1,3,20, false),
+                (20,20,5,9,5,9,1,3,12, false),
+                (20,20,5,9,5,9,1,3,14, false),
+                (20,20,5,9,5,9,1,3,16, false),
 
                //large value/small area, large cointainer
-               (20,20,1,5,1,5,50,100,5, false),
+               (20,20,1,5,1,5,50,100,6, false),
+               (20,20,1,5,1,5,50,100,8, false),
                (20,20,1,5,1,5,50,100,10, false),
-               (20,20,1,5,1,5,50,100,15, false),
-               //(20,20,1,5,1,5,50,100,20, false),
+               (20,20,1,5,1,5,50,100,12, false),
+               (20,20,1,5,1,5,50,100,14, false),
+               (20,20,1,5,1,5,50,100,16, false),
 
                //small value/large area, small cointainer
-               (10,10,5,9,5,9,1,3,5, false),
+               (10,10,5,9,5,9,1,3,6, false),
+               (10,10,5,9,5,9,1,3,8, false),
                (10,10,5,9,5,9,1,3,10, false),
-               (10,10,5,9,5,9,1,3,15, false),
-               //(10,10,5,9,5,9,1,3,20, false),
+               (10,10,5,9,5,9,1,3,12, false),
+               (10,10,5,9,5,9,1,3,14, false),
+               (10,10,5,9,5,9,1,3,16, false),
 
                //large value/small area, small cointainer
-               (10,10,1,5,1,5,50,100,5, false),
+               (10,10,1,5,1,5,50,100,6, false),
+               (10,10,1,5,1,5,50,100,8, false),
                (10,10,1,5,1,5,50,100,10, false),
-               (10,10,1,5,1,5,50,100,15, false),
-               //(10,10,1,5,1,5,50,100,20, false),
+               (10,10,1,5,1,5,50,100,12, false),
+               (10,10,1,5,1,5,50,100,14, false),
+               (10,10,1,5,1,5,50,100,16, false),
 
                //sqares
-               (10,10,1,10,-1,-1,1,10,5, true),
+               (10,10,1,10,-1,-1,1,10,6, true),
+               (10,10,1,10,-1,-1,1,10,8, true),
                (10,10,1,10,-1,-1,1,10,10, true),
-               (10,10,1,10,-1,-1,1,10,15, true),
-               //(10,10,1,10,-1,-1,1,10,20, true),
+               (10,10,1,10,-1,-1,1,10,12, true),
+               (10,10,1,10,-1,-1,1,10,14, true),
+               (10,10,1,10,-1,-1,1,10,16, true),
 
                //sqares
-               (20,20,1,10,-1,-1,1,10,5, true),
+               (20,20,1,10,-1,-1,1,10,6, true),
+               (20,20,1,10,-1,-1,1,10,8, true),
                (20,20,1,10,-1,-1,1,10,10, true),
-               (20,20,1,10,-1,-1,1,10,15, true),
-               //(20,20,1,10,-1,-1,1,10,20, true),
+               (20,20,1,10,-1,-1,1,10,12, true),
+               (20,20,1,10,-1,-1,1,10,14, true),
+               (20,20,1,10,-1,-1,1,10,16, true)
             };
 
             foreach (var config in configurations)
@@ -62,7 +74,7 @@ namespace BackpackProblem.StatisticsCollector
                         config.minItemValue, config.maxItemWidth,
                         config.maxItemHeight, config.maxItemValue,
                         config.itemCount, 1,
-                        30*60*1000, config.onlySquares,
+                        10*60*1000, config.onlySquares,
                         configurations.IndexOf(config));
                 }
                 catch
