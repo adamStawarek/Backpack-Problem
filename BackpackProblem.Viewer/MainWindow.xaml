@@ -1,0 +1,132 @@
+﻿<Window x:Class="BackpackProblem.Viewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:BackpackProblem.Viewer.Converters"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:command="http://www.galasoft.ch/mvvmlight"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        mc:Ignorable="d"
+        DataContext="{Binding Source={StaticResource Locator}, Path=Main}"
+        Title="Backpack problem" WindowStartupLocation="CenterScreen" 
+        ResizeMode="CanResizeWithGrip"
+        Height="800" Width="1200">
+    <Window.Resources>
+        <converters:FilePathConverter x:Key="FilePathConverter" />
+        <converters:DimensionConverter x:Key="DimensionConverter"/>
+        <converters:MarginConverter x:Key="MarginConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+        <converters:IntegerToBrushesConverter x:Key="IntegerToBrushesConverter"/>
+    </Window.Resources>
+    <Grid Background="{DynamicResource PrimaryHueLightBrush}" Margin="5" x:Name="Main">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="10" Background="White">
+            <Label Content="Select data set" HorizontalAlignment="Center" FontSize="18" FontWeight="Bold" Margin="5"/>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" Background="{DynamicResource PrimaryHueMidBrush}" Padding="5">
+                <ListView Height="250" SelectionMode="Single" x:Name="LstDataSets"
+                          ItemsSource="{Binding DataSets}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding .,Converter={StaticResource FilePathConverter}}"
+                                       FontSize="14" FontWeight="Bold" Margin="3" Foreground="White"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <command:EventToCommand CommandParameter="{Binding SelectedItem,ElementName=LstDataSets}"
+                                                    Command="{Binding DataContext.FindBestSubsetCommand, ElementName=Main}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ListView>
+            </ScrollViewer>
+            <Button Content="Upload data set" Command="{Binding UploadDataSetCommand}" 
+                    HorizontalAlignment="Center" Width="200" Margin="5"/>
+
+            <StackPanel Margin="10">
+                <Label Content="{Binding Container.Area}"
+                       FontSize="16" FontWeight="Bold" Margin="5"
+                       ContentStringFormat="Container area: {0}"/>
+                <Label Content="{Binding Container.AllItems.Count}"
+                       FontSize="16" FontWeight="Bold" Margin="5"
+                       ContentStringFormat="All items: {0}"/>
+                <Label Content="{Binding Subset.TotalArea}"
+                       FontSize="16" FontWeight="Bold" Margin="5"
+                       ContentStringFormat="Subset total area: {0}"/>
+                <Label Content="{Binding Subset.TotalValue}"
+                       FontSize="16" FontWeight="Bold" Margin="5"
+                       ContentStringFormat="Subset total value: {0}"/>
+                <Label Content="{Binding Subset.Items.Count}"
+                       FontSize="16" FontWeight="Bold" Margin="5"
+                       ContentStringFormat="Items in subset: {0}"/>
+                <Label Content="{Binding ExecutionTime}"
+                       FontSize="16" FontWeight="Bold" Margin="5"
+                       ContentStringFormat="Execution time(ms): {0}"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Column="1" Margin="5" Background="White">
+            <fa:ImageAwesome Icon="Spinner" Visibility="{Binding SpinnerVisibility}" Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                             HorizontalAlignment="Center" VerticalAlignment="Center" Spin="True" Height="80" Width="80" />
+
+            <Grid Visibility="{Binding Container,Converter={StaticResource NullToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Width="700" Height="400"
+                              HorizontalScrollBarVisibility="Auto" Grid.Row="0" Margin="5">
+                    <ItemsControl ItemsSource="{Binding Subset.Items}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas Width="{Binding Container.Width, Converter={StaticResource DimensionConverter}}"
+                                        Background="Black"
+                                        Height="{Binding Container.Height,Converter={StaticResource DimensionConverter}}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding Width,Converter={StaticResource DimensionConverter}}"
+                                  Margin="{Binding UpperLeftCornerPoint, Converter={StaticResource MarginConverter}}"
+                                  Height="{Binding Height,Converter={StaticResource DimensionConverter}}" 
+                                  ToolTip="{Binding .}"
+                                  Background="{Binding Id, Converter={StaticResource IntegerToBrushesConverter}}">
+                                    <Label Foreground="White" Content="{Binding Id}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Width="700" Height="200"
+                              HorizontalScrollBarVisibility="Auto" Grid.Row="1">
+                    <Grid >
+                        <ListBox ItemsSource="{Binding Container.AllItems}" >
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Background="{DynamicResource PrimaryHueDarkForegroundBrush}"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Width="{Binding Width,Converter={StaticResource DimensionConverter}}"
+                                      Margin="0,0,5,0"
+                                      Height="{Binding Height,Converter={StaticResource DimensionConverter}}" 
+                                      ToolTip="{Binding .}"
+                                      Background="{Binding Id, Converter={StaticResource IntegerToBrushesConverter}}">
+                                        <Label Foreground="White" Content="{Binding Id}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

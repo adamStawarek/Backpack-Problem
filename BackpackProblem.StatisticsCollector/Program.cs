@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -74,7 +73,7 @@ namespace BackpackProblem.StatisticsCollector
                         config.minItemValue, config.maxItemWidth,
                         config.maxItemHeight, config.maxItemValue,
                         config.itemCount, 1,
-                        10*60*1000, config.onlySquares,
+                        1 * 60 * 1000, config.onlySquares,
                         configurations.IndexOf(config));
                 }
                 catch
@@ -94,13 +93,6 @@ namespace BackpackProblem.StatisticsCollector
             int index)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"{index} | " +
-                          $"{containerWidth} {containerHeight} " +
-                          $"{minItemWidth} {maxItemWidth} " +
-                          $"{minItemHeight} {maxItemHeight} " +
-                          $"{minItemValue} {maxItemValue} " +
-                          $"{itemCount} {onlySquares}");
-
             sb.AppendLine();
 
             for (int i = 0; i < iterationCount; i++)
@@ -128,13 +120,8 @@ namespace BackpackProblem.StatisticsCollector
                 long elapsedMs = watch.ElapsedMilliseconds;
                 sb.Append(
                     isCompletedSuccessfully
-                        ? $"{container.Area} " +
+                        ? $"{(int)(index / 6)} " +
                           $"{container.AllItems.Count} " +
-                          $"{task.Result?.Items.Count} " +
-                          $"{task.Result?.TotalValue} " +
-                          $"{container.AllItems.Average(item => item.Area) / (double)container.Area} " +
-                          $"{container.AllItems.Average(item => item.Value / (double)item.Area)} " +
-                          $"{container.Subsets.IndexOf(task.Result)} " +
                           $"{container.Counter} " +
                           $"{elapsedMs}"
                         : "[Timeout]");
@@ -145,11 +132,11 @@ namespace BackpackProblem.StatisticsCollector
             await Task.Delay(1000);
 
             Directory.CreateDirectory(ResultsDirectory);
-            using (var file = new StreamWriter($"{ResultsDirectory}/" +
-                                               $"Result_{DateTime.Now.ToString("s").Replace(":", "-")}.txt"))
+            using (StreamWriter sw = File.AppendText($"{ResultsDirectory}/Results.txt"))
             {
-                file.Write(sb);
+                sw.Write(sb.ToString());
             }
+
         }
     }
 }
